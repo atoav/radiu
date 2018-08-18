@@ -1,0 +1,11 @@
+[package]
+name = "radiu"
+version = "0.1.0"
+authors = ["David Huss <dh@widerstandzwecklos.at>"]
+
+[dependencies]
+conrod = {version="0.61.1", features=["winit", "glium"]}
+glium = "0.22.0"
+find_folder = "0.3.0"
+rand = "0.5.5"
+chrono = "*"
