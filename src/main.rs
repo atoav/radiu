@@ -22,12 +22,17 @@ fn get_time() -> String{
 
 // Draw the Ui.
 fn set_widgets(ref mut ui: conrod::UiCell, ids: &mut Ids) {
-    use conrod::{color, widget, Colorable, Positionable, Sizeable, Widget};
+    use conrod::{color, widget, Colorable, Positionable, Sizeable, Widget, Labelable, Borderable};
+
+    let top = 240.0;
+    let button_width = 200.0;
+    let button_height = 60.0;
+    let button_text = 30;
 
     // Construct our main `Canvas` tree.
     widget::Canvas::new().flow_down(&[
-        (ids.clock, widget::Canvas::new().color(color::rgba(0.1, 0.1, 0.1, 1.0)).pad_bottom(10.0).length(240.0)),
-        (ids.body, widget::Canvas::new().color(color::rgba(0.15, 0.15, 0.15, 1.0)).pad_bottom(20.0))
+        (ids.clock, widget::Canvas::new().color(color::rgba(0.1, 0.1, 0.1, 1.0)).pad_bottom(10.0).length(top)),
+        (ids.body, widget::Canvas::new().color(color::rgba(0.15, 0.15, 0.15, 1.0)))
     ]).set(ids.master, ui);
 
     // Here we make some canvas `Tabs` in the middle column.
@@ -39,16 +44,53 @@ fn set_widgets(ref mut ui: conrod::UiCell, ids: &mut Ids) {
         .bar_thickness(70.0)
         .set(ids.tabs, ui);
 
+    // Display the current time in the clock Canvas
     widget::Text::new(&get_time()[..])
         .color(color::rgba(0.75, 0.75, 0.75, 1.0))
         .font_size(160)
         .middle_of(ids.clock)
         .set(ids.time, ui);
 
+    widget::Button::new()
+        .label_font_size(button_text)
+        .color(color::rgba(0.1, 0.1, 0.1, 1.0))
+        .label_color(color::rgba(1.0, 1.0, 1.0, 0.7))
+        .w_h(button_width, button_height)
+        .label("FM4")
+        .border(0.0)
+        .label_x( conrod::position::Relative::Scalar(-50.0))
+        .top_left_with_margins_on(ids.tab_radio, 30.0, 10.0)
+        .set(ids.button_fm4, ui);
+
+    widget::Button::new()
+        .label_font_size(button_text)
+        .color(color::rgba(0.1, 0.1, 0.1, 1.0))
+        .label_color(color::rgba(1.0, 1.0, 1.0, 0.7))
+        .w_h(button_width, button_height)
+        .label("OE1")
+        .border(0.0)
+        .left_justify_label()
+        .down(10.0)
+        .set(ids.button_oe1, ui);
+
+    widget::Button::new()
+        .label_font_size(button_text)
+        .color(color::rgba(0.1, 0.1, 0.1, 1.0))
+        .label_color(color::rgba(1.0, 1.0, 1.0, 0.7))
+        .w_h(button_width, button_height)
+        .label("DLF")
+        .border(0.0)
+        .left_justify_label()
+        .down(10.0)
+        .set(ids.button_dlf, ui);
+
+    // Set the labels on the Canvas of the Tabs
     fn text (text: widget::Text) -> widget::Text { text.color(color::WHITE).font_size(36) }
     text(widget::Text::new("Radio")).middle_of(ids.tab_radio).set(ids.radio_label, ui);
     text(widget::Text::new("Player")).middle_of(ids.tab_player).set(ids.player_label, ui);
     text(widget::Text::new("USB")).middle_of(ids.tab_usb).set(ids.usb_label, ui);
+
+
 }
 
 
@@ -67,7 +109,13 @@ widget_ids! {
         time,
         usb_label,
         player_label,
-        radio_label
+        radio_label,
+
+        button_fm4,
+        button_oe1,
+        button_dlf,
+
+        list_radio
     }
 }
 
@@ -81,8 +129,11 @@ fn main() {
     // Build the window.
     let mut events_loop = glium::glutin::EventsLoop::new();
     let window = glium::glutin::WindowBuilder::new()
-        .with_title("Canvas")
+        .with_title("radiu")
+        // .with_fullscreen(Some(events_loop.get_primary_monitor()))
         .with_dimensions((WIDTH, HEIGHT).into());
+
+
     let context = glium::glutin::ContextBuilder::new()
         .with_vsync(true);
 
